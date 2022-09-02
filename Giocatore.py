@@ -19,7 +19,7 @@ class Giocatore:
         Parametri di ingresso:
             lista di cartelle assegnate al giocatore
         """
-        pass
+        print(f'Il giocatore ha ricevuto {len(cartelle)} cartelle')
 
     def segna_numero(self, numero):
         """
@@ -31,3 +31,4 @@ class Giocatore:
         Risultati restituiti:
             quale evento si è verificato: nullo, ambo, terna, quaterna, cinquina, tombola
         """
+        return 'tombola'

@@ -11,6 +11,7 @@ del numero di cartelle per giocatore
 - Verifica che i dati da linea di comando siano coerenti e
 segnalazione nel caso non lo siano
 - Creazione sacchetto, tabellone e cartelle
+- Creazione giocatori
 """
 
 from argparse import ArgumentParser
@@ -19,6 +20,7 @@ from math import ceil
 from Sacchetto import Sacchetto
 from Tabellone import Tabellone
 from Cartelle import Gruppo_cartelle
+from Giocatore import Giocatore
 
 parser = ArgumentParser()
 parser.add_argument('-g', '--n_giocatori',
@@ -55,12 +57,21 @@ if __name__ == '__main__':
     print(f'Create {len(cartelle)} cartelle')
 
     # Distribuisci le cartelle ai giocatori
+    giocatori = []
+    assegnate = 0
+    for i in range(n_giocatori):
+        giocatore = Giocatore()
+        giocatore.riceve_cartelle(cartelle[assegnate:assegnate+n_cartelle[i]])
+        assegnate += n_cartelle[i]
+        giocatori.append(giocatore)
 
     while True:
         numero = sacchetto.estrai()
 
-        # aggiorna tabellone e tabelle
+        # aggiorna tabellone e cartelle
         risultato = tabellone.segna_numero(numero)
+        for giocatore in giocatori:
+            risultato = giocatore.segna_numero(numero)
 
         # rileva vincite
 
