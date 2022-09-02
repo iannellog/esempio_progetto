@@ -21,5 +21,5 @@ class Sacchetto:
         Risultati restituiti:
             numero estratto
         """
-        val = None
+        val = 90
         return val
