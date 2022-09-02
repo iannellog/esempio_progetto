@@ -31,6 +31,16 @@ parser.add_argument('-n', '--n_cartelle',
                     nargs='*', type=int, default=[1, 1])
 
 
+ranking = ['nullo', 'ambo', 'terna', 'quaterna', 'cinquina', 'tombola']
+
+
+def is_migliore(risultato1, risultato2):
+    if ranking.index(risultato1) > ranking.index(risultato2):
+        return risultato1
+    else:
+        return risultato2
+
+
 if __name__ == '__main__':
     # Acquisisci quanti giocatori e quante cartelle per giocatore
     args = parser.parse_args()
@@ -67,15 +77,17 @@ if __name__ == '__main__':
 
     while True:
         numero = sacchetto.estrai()
+        print(f'Il numero estratto è {numero}')
 
         # aggiorna tabellone e cartelle
-        risultato = tabellone.segna_numero(numero)
+        risultato_migliore = tabellone.segna_numero(numero)
         for giocatore in giocatori:
             risultato = giocatore.segna_numero(numero)
+            risultato_migliore = is_migliore(risultato, risultato_migliore)
 
         # rileva vincite
 
         # se qualcuno ha fatto tombola termina il gioco
-        if risultato == 'tombola':
+        if risultato_migliore == 'tombola':
             print('Il gioco è terminato')
             break

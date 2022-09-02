@@ -43,5 +43,8 @@ class Tabellone:
         j = (val - 1) % 5
         self.righe_masks[i, j] = 1
         # print(self. righe_masks)
-        risultato = 'tombola'
+        if sum(self.righe_masks[i]) == 5:  # il test non è corretto: TODO
+            risultato = 'tombola'
+        else:
+            risultato = 'nullo'
         return risultato

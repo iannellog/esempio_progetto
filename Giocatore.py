@@ -31,4 +31,4 @@ class Giocatore:
         Risultati restituiti:
             quale evento si è verificato: nullo, ambo, terna, quaterna, cinquina, tombola
         """
-        return 'tombola'
+        return 'nullo'
