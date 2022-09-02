@@ -10,9 +10,15 @@ Sep 2,2022:
 del numero di cartelle per giocatore
 - Verifica che i dati da linea di comando siano coerenti e
 segnalazione nel caso non lo siano
+- Creazione sacchetto, tabellone e cartelle
 """
 
 from argparse import ArgumentParser
+from math import ceil
+
+from Sacchetto import Sacchetto
+from Tabellone import Tabellone
+from Cartelle import Gruppo_cartelle
 
 parser = ArgumentParser()
 parser.add_argument('-g', '--n_giocatori',
@@ -34,11 +40,31 @@ if __name__ == '__main__':
         print(f'Il numero di giocatori non corrisponde alla lunghezza della lista di cartelle da assegnare')
         exit(1)
 
+    # Crea sacchetto da cui estrarre i numeri
+    sacchetto = Sacchetto()
+
     # Crea tabellone
+    tabellone = Tabellone()
+
     # Genera un numero sufficiente di cartelle a gruppi di 6
+    tot_cartelle = sum(n_cartelle)
+    n_gruppi = ceil(tot_cartelle/6)
+    cartelle = []
+    for i in range(n_gruppi):
+        cartelle += Gruppo_cartelle().genera_gruppo()
+    print(f'Create {len(cartelle)} cartelle')
+
     # Distribuisci le cartelle ai giocatori
-    # Ripeti
-    #   estrai un numero
-    #   aggiorna tabellone e tabelle
-    #   rileva vincite
-    #   se qualcuno ha fatto tombola termina il gioco
+
+    while True:
+        numero = sacchetto.estrai()
+
+        # aggiorna tabellone e tabelle
+        risultato = tabellone.segna_numero(numero)
+
+        # rileva vincite
+
+        # se qualcuno ha fatto tombola termina il gioco
+        if risultato == 'tombola':
+            print('Il gioco è terminato')
+            break
