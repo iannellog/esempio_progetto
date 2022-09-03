@@ -39,12 +39,22 @@ class Tabellone:
         Risultati restituiti:
             quale evento si è verificato: nullo, ambo, terna, quaterna, cinquina, tombola
         """
-        i = (val - 1) // 5
-        j = (val - 1) % 5
+        i = (val - 1) // 5  # riga del tabellone da aggiornare (indice)
+        j = (val - 1) % 5  # colonna del tabellone da aggiornare (indice)
+        k = (val - 1) // 15  # cartella del tabellone da aggiornare (indice)
         self.righe_masks[i, j] = 1
-        # print(self. righe_masks)
-        if sum(self.righe_masks[i]) == 5:  # il test non è corretto: TODO
+        risultato_riga = sum(self.righe_masks[i])
+        risultato_cartella = sum(sum(self.righe_masks[3*k:3*(k+1)]))
+        if risultato_cartella == 15:
             risultato = 'tombola'
+        elif risultato_riga == 5:
+            risultato = 'cinquina'
+        elif risultato_riga == 4:
+            risultato = 'quaterna'
+        elif risultato_riga == 3:
+            risultato = 'terna'
+        elif risultato_riga == 2:
+            risultato = 'ambo'
         else:
             risultato = 'nullo'
         return risultato

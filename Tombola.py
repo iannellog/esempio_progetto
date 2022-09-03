@@ -86,6 +86,8 @@ if __name__ == '__main__':
             risultato_migliore = is_migliore(risultato, risultato_migliore)
 
         # rileva vincite
+        if not risultato_migliore == 'nullo':
+            print(f'---> {risultato_migliore}')
 
         # se qualcuno ha fatto tombola termina il gioco
         if risultato_migliore == 'tombola':
