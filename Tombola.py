@@ -75,8 +75,10 @@ if __name__ == '__main__':
         assegnate += n_cartelle[i]
         giocatori.append(giocatore)
 
+    n_estratti = 0
     while True:
         numero = sacchetto.estrai()
+        n_estratti += 1
         print(f'Il numero estratto è {numero}')
 
         # aggiorna tabellone e cartelle
@@ -91,5 +93,5 @@ if __name__ == '__main__':
 
         # se qualcuno ha fatto tombola termina il gioco
         if risultato_migliore == 'tombola':
-            print('Il gioco è terminato')
+            print(f'Il gioco è terminato dopo {n_estratti} numeri estratti')
             break
