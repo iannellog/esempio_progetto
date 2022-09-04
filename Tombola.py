@@ -5,7 +5,7 @@ Created on Thu Sep  1 10:29:04 2022
 
 @author: iannello
 
-Sep 2,2022:
+Sep 2, 2022:
 - Acquisizione da riga di comando del numero di giocatori e
 del numero di cartelle per giocatore
 - Verifica che i dati da linea di comando siano coerenti e
@@ -13,7 +13,7 @@ segnalazione nel caso non lo siano
 - Creazione sacchetto, tabellone e cartelle
 - Creazione giocatori
 
-Sep 3,2022
+Sep 3, 2022
 - Assegnazione cartelle ai giocatori
 - Estrazione del numero e verifica da parte dei giocatori
 """

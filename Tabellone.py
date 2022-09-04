@@ -7,6 +7,10 @@ Created on Thu Sep  2 10:29:04 2022
 
 Sep 2, 2022
 - definizione interfaccia e implementazione minimale
+
+Sep 3, 2022
+- definizione rappresentazione
+- implementazione del metodo segna_numero
 """
 
 import numpy as np
