@@ -12,6 +12,10 @@ del numero di cartelle per giocatore
 segnalazione nel caso non lo siano
 - Creazione sacchetto, tabellone e cartelle
 - Creazione giocatori
+
+Sep 3,2022
+- Assegnazione cartelle ai giocatori
+- Estrazione del numero e verifica da parte dei giocatori
 """
 
 from argparse import ArgumentParser
@@ -34,11 +38,20 @@ parser.add_argument('-n', '--n_cartelle',
 ranking = ['nullo', 'ambo', 'terna', 'quaterna', 'cinquina', 'tombola']
 
 
-def is_migliore(risultato1, risultato2):
-    if ranking.index(risultato1) > ranking.index(risultato2):
-        return risultato1
+def is_migliore(nuovo_risultato, risultato_precedente):
+    """
+    Parametri
+        un nuovo risultato da confrontare con il precedente migliore
+        risultato (nuovo_risultato)
+        precedente miglore risultato (risultato_precedente)
+
+    Risultati restituiti
+        True se il nuovo risultato è migliore, False altrimenti
+    """
+    if ranking.index(nuovo_risultato) > ranking.index(risultato_precedente):
+        return True
     else:
-        return risultato2
+        return False
 
 
 if __name__ == '__main__':
@@ -75,18 +88,29 @@ if __name__ == '__main__':
         assegnate += n_cartelle[i]
         giocatori.append(giocatore)
 
+    risultato_migliore = 'nullo'
     while True:
         numero = sacchetto.estrai()
         print(f'Il numero estratto è {numero}')
 
-        # aggiorna tabellone e cartelle
-        risultato_migliore = tabellone.segna_numero(numero)
+        # aggiorna tabellone
+        segnala = False
+        risultato = tabellone.segna_numero(numero)
+        flag = is_migliore(risultato, risultato_migliore)
+        if flag:
+            risultato_migliore = risultato
+            segnala = True
+
+        # aggiorna le cartelle dei giocatori
         for giocatore in giocatori:
             risultato = giocatore.segna_numero(numero)
-            risultato_migliore = is_migliore(risultato, risultato_migliore)
+            flag = is_migliore(risultato, risultato_migliore)
+            if flag:
+                risultato_migliore = risultato
+                segnala = True
 
         # rileva vincite
-        if not risultato_migliore == 'nullo':
+        if segnala:
             print(f'---> {risultato_migliore}')
 
         # se qualcuno ha fatto tombola termina il gioco
