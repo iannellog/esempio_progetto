@@ -17,6 +17,8 @@ Sep 4, 2022
 
 import numpy as np
 
+from Sacchetto import random_num
+
 
 class Cartella:
 
@@ -69,9 +71,19 @@ class Cartella:
 
     def blocca_posizione(self, i, j):
         """
-        blocca la casella di indici i, j
+        blocca la casella di indici i, j se non è occupata,
+        altrimenti blocca un altra casella non bloccata della
+        colonna j
         """
-        self.caselle[i, j] = 1
+        if self.caselle[i, j] == 0:
+            self.caselle[i, j] = 1
+        else:
+            i = np.nonzero(self.caselle[:, j] == 0)[0]  # l'indice serve perché np.nonzero restituisce una tupla
+            if len(i) == 0:
+                print(f'*** errore *** in Cartella.blocca_posizione: non ci sono posizionei libere nella colonna {j}')
+                exit(1)
+            # blocca la prima casella non bloccata
+            self.caselle[i[0], j] = 1
 
 
 class Gruppo_cartelle:
@@ -102,7 +114,7 @@ class Gruppo_cartelle:
         - al termine della seconda sottofase: (i) poiché dopo la prima sottofase
           tutte le cartelle hanno esattamente una casella bloccata in ogni colonna
           il vincolo sulle colonne è soddisfatto, (ii) dopo la prima sottofase c'è
-          almeno una cartella che ha boccato la posizione (8,8) che va
+          almeno una cartella che ha boccato la posizione (2,8) che va
           obbligatoriamente riservata al numero 90 (iii) poiché dopo la prima
           sottofase tutte le cartelle hanno bloccato 9 posizioni, e poiché nella
           seconda sottofase le caselle sono state bloccate considerando una
@@ -113,11 +125,11 @@ class Gruppo_cartelle:
           sia soddisfatto, si procede a spostare le posizioni bloccate dalle
           righe che hanno più di 5 posizioni bloccate a quelle che ne hanno meno
           fino a soddisfare il vincolo; in questa sottofase occorre fare
-          attenzione a non spostare la posizione (8,8) in una delle cartelle dove
+          attenzione a non spostare la posizione (2,8) in una delle cartelle dove
           essa è bloccata;
         - infine si procede ad assegnare i numeri da 1 a 90 alle posizioni
           bloccate; si procede preliminarmente ad assegnare 90 alla cartella dove
-          la posizione (8,8) è bloccata; successivamente, per garantire una
+          la posizione (2,8) è bloccata; successivamente, per garantire una
           distribuzione casuale, si parte dai numeri da 1 a 9 in ordine casuale;
           si passa poi ai numeri da 10 a 19, sempre in ordine casuale e così via
           fino ai numeri da 80 a 89.
@@ -137,5 +149,47 @@ class Gruppo_cartelle:
                 i = (i + 1) % 3
             i = (i + 1) % 3  # passa alla riga successiva per differenziare le cartelle
 
+        # prima fase, sottofase 2
+        c = random_num(6).__next__()  # sceglie una cartella a caso
+        # blocca altre 3 posizioni in colonna 0
+        for p in range(3):
+            cartelle[c].blocca_posizione(0, 0)
+            c = (c+1) % 6
+        for j in range(1, 8):
+            # blocca altre 4 posizioni in colonna j
+            for p in range(4):
+                cartelle[c].blocca_posizione(0, j)
+                c = (c+1) % 6
+        # blocca altre 5 posizioni in colonna 8
+        for p in range(5):
+            cartelle[c].blocca_posizione(0, 8)
+            c = (c+1) % 6
+
+        if not self.check_vincoli(cartelle):
+            # prima fase: sottofase 3
+
+            if not self.check_vincoli(cartelle):
+                print(f'*** errore *** le cartelle non soddisfano i vincoli')
+                exit()
+
         return cartelle
+
+    def check_vincoli(self, cartelle):
+        """
+        Funzione ausiliaria: verifica che le posizioni occupate di
+        tutte le cartelle di un gruppo soddisfino i vincoli
+        """
+        pos90 = False
+        for c in cartelle:
+            if c.caselle[2, 8] == 1:
+                pos90 = True
+            if not sum(sum(c.caselle)) == 15:
+                return False
+            # for i in range(3):
+            #     if not sum(c.caselle[i]) == 5:
+            #         return False
+            for j in range(9):
+                if not sum(c.caselle[:, j]) > 0:
+                    return False
+        return pos90
 

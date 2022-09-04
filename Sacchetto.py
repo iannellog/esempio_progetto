@@ -10,10 +10,29 @@ Sep 2, 2022
 
 Sep 3, 2022
 - impementazione mediante generator
+Sep 4, 2022
+- aggiunto un generatore di numeri casuali da 0 a n-1
 """
 
 import random
 import time
+
+
+def random_num(n: int, seed: int = None):
+    """
+    Generator
+    the generator drow an infinite list of numbers by lot
+    Numbers are between 0 and n-1
+    The random generator is initialized by a different seed
+    each time the generator is created, unless an explicit seed
+    is passed upn creation
+    """
+    if seed is None:
+        random.seed(time.perf_counter_ns())
+    else:
+        random.seed(seed)
+    while True:
+        yield random.randrange(n)
 
 
 def extractor(n, seed=None):
