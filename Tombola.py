@@ -89,7 +89,9 @@ if __name__ == '__main__':
         giocatori.append(giocatore)
 
     risultato_migliore = 'nullo'
+    print('Il gioco può iniziare, premi INVIO per estrarre un numero')
     while True:
+        input('')
         numero = sacchetto.estrai()
         print(f'Il numero estratto è {numero}')
 
