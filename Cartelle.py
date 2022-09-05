@@ -106,7 +106,7 @@ class Gruppo_cartelle:
           terza partendo da (2,0) e così fino alla sesta cartella; a questo punto
           sono state bloccate 54 posizioni e ne restano da posizionare 36 di cui
           3 nella prima colonna, 4 nelle colonne dalla seconda all'ottava, 5 nella
-          non colonna;
+          nona colonna;
         - seconda sottofase: partendo da una cartella scelta a caso si bloccano in
           cartelle successive le 3 posizioni della prima colonna; si ripete il
           procedimento per le posizioni rimaste delle colonne successive, partendo
@@ -165,16 +165,49 @@ class Gruppo_cartelle:
             cartelle[c].blocca_posizione(0, 8)
             c = (c+1) % 6
 
-        if not self.check_vincoli(cartelle):
+        if not self.check_vincoli_gruppo(cartelle):  # vi sono cartelle che non rispettano i vincoli
             # prima fase: sottofase 3
+            for c in cartelle:
+                while not self.check_vincoli(c):  # la cartella va "aggiustata"
+                    # ASSERT: c'è almeno una riga con più di 5 posizioni bloccate e almeno un'altra con meno di 5 posizioni bloccate
+                    ind_more = np.nonzero(sum(np.transpose(c.caselle)) > 5)[0][0]  # indice di una riga da cui togliere posizioni bloccate
+                    count_more = sum(c.caselle[ind_more]) - 5  # numero di posizioni bloccate da togliere
+                    inds_cols = np.nonzero(c.caselle[ind_more] == 1)[0]  # indici di colonna delle posizioni bloccate
+                    # toglie tutte le posizioni bloccate in eccesso dalla riga ind_more
+                    for j in inds_cols:
+                        inds_less = np.nonzero(sum(np.transpose(c.caselle)) < 5)[0]  # indici delle righe a cui aggiungere posizioni bloccate
+                        for i in inds_less:
+                            if c.caselle[i, j] == 0:  # posizione dela riga i che si può bloccare
+                                # sposta la posizione bloccata dalla riga ind_more alla riga i
+                                c.caselle[i, j] = 1
+                                c.caselle[ind_more, j] = 0
+                                count_more -= 1
+                                break
+                        if count_more == 0:  # non vi sono più posizioni bloccate da rimuovere sulla riga ind_more
+                            break
 
-            if not self.check_vincoli(cartelle):
+            if not self.check_vincoli_gruppo(cartelle):
                 print(f'*** errore *** le cartelle non soddisfano i vincoli')
                 exit()
 
         return cartelle
 
-    def check_vincoli(self, cartelle):
+    def check_vincoli(self, cartella):
+        """
+        Funzione ausiliaria: verifica che le posizioni occupate di
+        una cartelle soddisfino i vincoli
+        """
+        if not sum(sum(cartella.caselle)) == 15:
+            return False
+        for i in range(3):
+            if not sum(cartella.caselle[i]) == 5:
+                return False
+        for j in range(9):
+            if not sum(cartella.caselle[:, j]) > 0:
+                return False
+        return True
+
+    def check_vincoli_gruppo(self, cartelle):
         """
         Funzione ausiliaria: verifica che le posizioni occupate di
         tutte le cartelle di un gruppo soddisfino i vincoli
@@ -183,13 +216,7 @@ class Gruppo_cartelle:
         for c in cartelle:
             if c.caselle[2, 8] == 1:
                 pos90 = True
-            if not sum(sum(c.caselle)) == 15:
+            if not self.check_vincoli(c):
                 return False
-            # for i in range(3):
-            #     if not sum(c.caselle[i]) == 5:
-            #         return False
-            for j in range(9):
-                if not sum(c.caselle[:, j]) > 0:
-                    return False
         return pos90
 
