@@ -17,7 +17,7 @@ Sep 4, 2022
 
 import numpy as np
 
-from Sacchetto import random_num
+from Sacchetto import random_num, Sacchetto
 
 
 class Cartella:
@@ -68,6 +68,9 @@ class Cartella:
             else:
                 risultato = 'nullo'
             return risultato
+
+    def stampa(self):
+        print(self.caselle)
 
     def blocca_posizione(self, i, j):
         """
@@ -189,6 +192,34 @@ class Gruppo_cartelle:
             if not self.check_vincoli_gruppo(cartelle):
                 print(f'*** errore *** le cartelle non soddisfano i vincoli')
                 exit()
+
+            # seconda fase: assegnare i numeri alle cartelle
+
+            # assegna preliminarmente il numero 90 alla prima cartella che ha la posizione (2,8) bloccata
+            for c in cartelle:
+                if c.caselle[2, 8] == 1:
+                    c.caselle[2, 8] = 90
+                    break
+
+            # estrae a sorte i numeri da 1 a 90 e li distribuisce in 9 liste
+            sacchetto = Sacchetto()
+            bags = [[] for i in range(9)]
+            for i in range(90):
+                n = sacchetto.estrai()
+                if n == 1 or n == 90:  # 1 e 90 sono già piazzati
+                    continue
+                bags[n // 10].append(n)
+
+            # assegna i numeri una lista alla volta
+            for j in range(9):
+                # assegna i numeri relativi alla colonna j delle cartelle
+                while len(bags[j]) > 0:  # se la lista non è vuota
+                    n = bags[j].pop()  # estrai un numero
+                    for c in cartelle:
+                        inds_rows = np.nonzero(c.caselle[:, j] == 1)[0]  # posizioni bloccate non ancora assegnate nella colonna i
+                        if len(inds_rows) > 0:  # vi sono posizioni bloccate non ancora assegnate
+                            c.caselle[inds_rows[0], j] = n  # assegna il numero alla posizione bloccata
+                            break  # passa ad assegnare un altro numero
 
         return cartelle
 

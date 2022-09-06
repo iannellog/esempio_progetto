@@ -62,3 +62,10 @@ class Tabellone:
         else:
             risultato = 'nullo'
         return risultato
+
+    def stampa(self):
+        for c in range(6):
+            print(self.righe_masks[3*c])
+            print(self.righe_masks[3*c+1])
+            print(self.righe_masks[3*c+2])
+            print()
