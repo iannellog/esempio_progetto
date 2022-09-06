@@ -28,7 +28,7 @@ class Giocatore:
             lista di cartelle assegnate al giocatore
         """
         self.cartelle = cartelle
-        print(f'Il giocatore ha ricevuto {len(cartelle)} cartelle')
+        # print(f'Il giocatore ha ricevuto {len(cartelle)} cartelle')
 
     def segna_numero(self, numero):
         """
@@ -43,3 +43,8 @@ class Giocatore:
         for cartella in self.cartelle:
             risultato = cartella.segna_numero(numero)
         return risultato
+
+    def stampa_cartelle(self):
+        for c in self.cartelle:
+            c.stampa()
+            print()

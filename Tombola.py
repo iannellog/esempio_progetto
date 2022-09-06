@@ -85,11 +85,15 @@ if __name__ == '__main__':
     for i in range(n_giocatori):
         giocatore = Giocatore()
         giocatore.riceve_cartelle(cartelle[assegnate:assegnate+n_cartelle[i]])
+        print(f'Il giocatore {i} ha ricevuto {n_cartelle[i]} cartelle:')
+        giocatore.stampa_cartelle()
         assegnate += n_cartelle[i]
         giocatori.append(giocatore)
 
     risultato_migliore = 'nullo'
     print('Il gioco può iniziare, premi INVIO per estrarre un numero')
+    giocatore_id = -1
+    vincitore = ''
     while True:
         input('')
         numero = sacchetto.estrai()
@@ -101,21 +105,38 @@ if __name__ == '__main__':
         flag = is_migliore(risultato, risultato_migliore)
         if flag:
             risultato_migliore = risultato
+            giocatore_id = 0
+            vincitore = 'Tabellone'
             segnala = True
 
         # aggiorna le cartelle dei giocatori
-        for giocatore in giocatori:
+        for giocatore, i in zip(giocatori, range(len(giocatori))):
             risultato = giocatore.segna_numero(numero)
             flag = is_migliore(risultato, risultato_migliore)
             if flag:
                 risultato_migliore = risultato
+                giocatore_id = i+1
+                vincitore = f'Giocatore {giocatore_id}'
                 segnala = True
 
         # rileva vincite
         if segnala:
-            print(f'---> {risultato_migliore}')
+            print()
+            print(f'---> {vincitore}: {risultato_migliore} ')
+            if giocatore_id > 0:
+                giocatori[giocatore_id - 1].stampa_cartelle()
+            else:
+                tabellone.stampa()
+            print()
 
         # se qualcuno ha fatto tombola termina il gioco
         if risultato_migliore == 'tombola':
             print('Il gioco è terminato')
             break
+
+    print()
+    print('Tabellone')
+    tabellone.stampa()
+    for g, i in zip(giocatori, range(len(giocatori))):
+        print(f'Giocatore {i+1}')
+        g.stampa_cartelle()
